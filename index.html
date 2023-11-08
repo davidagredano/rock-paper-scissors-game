@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rock Paper Scissors</title>
-</head>
-<body>
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Rock Paper Scissors</h1>
+      <div class="scores">
+        <div class="score-box">
+          <h2>Player:</h2>
+          <h3 id="player-score">0</h3>
+        </div>
+        <div class="score-box">
+          <h2>Computer:</h2>
+          <h3 id="computer-score">0</h3>
+        </div>
+      </div>
+      <p class="result">Choose your move:</p>
+      <div class="round">
+        <p id="player"></p>
+        <p id="computer"></p>
+      </div>
+      <div class="buttons">
+        <button id="rock">
+          <i id="rock" class="fa-solid fa-hand-back-fist"></i>
+        </button>
+        <button id="paper"><i id="paper" class="fa-solid fa-hand"></i></button>
+        <button id="scissors">
+          <i id="scissors" class="fa-solid fa-hand-scissors fa-rotate-90"></i>
+        </button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+    <script
+      src="https://kit.fontawesome.com/5f668f5af8.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

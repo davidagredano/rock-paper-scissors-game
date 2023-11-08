@@ -1,6 +1,20 @@
 // Global configuration
-const CHOICES = ["Rock", "Paper", "Scissors"];
+const OBJECTS = ["rock", "paper", "scissors"];
+const BEATS = { rock: "scissors", paper: "rock", scissors: "paper" };
+const SCORE = { player: 0, computer: 0 };
 const ROUNDS = 5;
+const ICONS = {
+  facingRight: {
+    rock: "<i class='fa-solid fa-hand-back-fist fa-rotate-90'></i>",
+    paper: "<i class='fa-solid fa-hand fa-rotate-90'></i>",
+    scissors: "<i class='fa-solid fa-hand-scissors fa-flip-horizontal'></i>",
+  },
+  facingLeft: {
+    rock: "<i class='fa-solid fa-hand-back-fist fa-rotate-270'></i>",
+    paper: "<i class='fa-solid fa-hand fa-rotate-270'></i>",
+    scissors: "<i class='fa-solid fa-hand-scissors'></i>",
+  },
+};
 
 // Capitalize a string (helper)
 function capitalize(string) {
@@ -8,72 +22,56 @@ function capitalize(string) {
 }
 
 // Randomly return an element from an array
-function getComputerChoice(choices) {
-  const randomIndex = Math.floor(Math.random() * choices.length);
-  return choices[randomIndex];
+function getComputerChoice(objects) {
+  const randomIndex = Math.floor(Math.random() * objects.length);
+  return objects[randomIndex];
+}
+
+// Add an event listener to the buttons that call the playRound function
+// with the correct playerChoice every time a button is clicked
+const buttons = document.querySelector(".buttons");
+buttons.addEventListener("click", (event) => playRound(event.target.id));
+
+// Trigger all the fonctionality involved in playing a round
+function playRound(playerChoice) {
+  const computerChoice = getComputerChoice(OBJECTS);
+  const winner = getWinner(playerChoice, computerChoice);
+  displayResult(playerChoice, computerChoice, winner);
+  updateScore(SCORE, winner);
 }
 
 // Compare 2 objects and return the winner
-function playRound(playerSelection, computerSelection) {
-  playerSelection = capitalize(playerSelection);
-  const encounter = playerSelection + " vs " + computerSelection;
-  switch (encounter) {
-    case "Rock vs Scissors":
-    case "Scissors vs Paper":
-    case "Paper vs Rock":
-      return "Player";
-    case "Scissors vs Rock":
-    case "Paper vs Scissors":
-    case "Rock vs Paper":
-      return "Computer";
-    default:
-      return;
-  }
-}
-
-// Play 5 rounds, keep scores and report a winner or loser at the end
-function game(rounds) {
-  // Initialize scores
-  let playerScore = 0;
-  let computerScore = 0;
-
-  // Play 5 rounds
-  for (let i = 1; i <= rounds; i++) {
-    // Get player and computer choices
-    const playerSelection = prompt("Choose your move! (rock, paper, scissors)");
-    const computerSelection = getComputerChoice(CHOICES);
-
-    // Get the result of the round
-    const result = playRound(playerSelection, computerSelection);
-
-    // Show the result of the round
-    result == "Player" || result == "Computer"
-      ? console.log(`Round ${i}: ${result} won the round`)
-      : console.log(`Round ${i}: It's a tie`);
-
-    // Update scores
-    if (result == "Player") {
-      playerScore++;
-    } else if (result == "Computer") {
-      computerScore++;
-    }
-  }
-
-  // Show the winner and the score at the end of the 5 rounds
-  if (playerScore > computerScore) {
-    console.log(
-      `Result: Player won the game (${playerScore}-${computerScore})`
-    );
-  } else if (playerScore < computerScore) {
-    console.log(
-      `Result: Computer won the game (${playerScore}-${computerScore})`
-    );
+function getWinner(playerChoice, computerChoice) {
+  if (BEATS[playerChoice] == computerChoice) {
+    return "player";
+  } else if (BEATS[computerChoice] == playerChoice) {
+    return "computer";
   } else {
-    console.log(
-      `Result: Game result in a tie (${playerScore}-${computerScore})`
-    );
+    return null;
   }
 }
 
-// Call the main game loop
-game(ROUNDS);
+// Display round results in the DOM
+function displayResult(playerChoice, computerChoice, winner) {
+  const player = document.querySelector("#player");
+  const computer = document.querySelector("#computer");
+  const result = document.querySelector("p.result");
+  player.innerHTML = ICONS.facingRight[playerChoice];
+  computer.innerHTML = ICONS.facingLeft[computerChoice];
+  result.textContent = winner ? `${capitalize(winner)} wins` : "Tie";
+}
+
+// Display the running score, and announce a winner of the game
+// once one player reaches 5 points.
+function updateScore(scoreObject, winner) {
+  if (winner) {
+    const scoreDOMElement = document.querySelector(`#${winner}-score`);
+    scoreDOMElement.textContent = ++scoreObject[winner];
+    if (scoreObject[winner] === 5) displayWinner(winner);
+  }
+}
+
+// Announce the winner of the game
+function displayWinner(winner) {
+  alert(winner + " WINS!");
+}
